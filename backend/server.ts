@@ -54,6 +54,44 @@ app.get('/api/animes/:animeName/characters', async (req, res) => {
     }
 });
 
+app.get('/api/graph/mbti', async (req, res) => {
+    try {
+        const mbtiData = await collection.aggregate([
+            { $group: { _id: '$character_mbti_type', count: { $sum: 1 } } },
+            { $project: { mbti: '$_id', count: 1, _id: 0 } }
+        ]).toArray();
+        res.json(mbtiData);
+    } catch (err) {
+        console.error("Error fetching MBTI data:", err);
+        res.status(500).json({ error: "Internal Server Error" });
+    }
+});
+
+app.get('/api/graph/enneagram', async (req, res) => {
+    try {
+        const enneagramData = await collection.aggregate([
+            { $group: { _id: '$character_enneagram_type', count: { $sum: 1 } } },
+            { $project: { enneagram: '$_id', count: 1, _id: 0 } }
+        ]).toArray();
+        res.json(enneagramData);
+    } catch (err) {
+        console.error("Error fetching Enneagram data:", err);
+        res.status(500).json({ error: "Internal Server Error" });
+    }
+});
+
+app.get('/api/graph/animes', async (req, res) => {
+    try {
+        const animeData = await collection.aggregate([
+            { $group: { _id: '$anime_name', count: { $sum: 1 } } },
+            { $project: { anime: '$_id', count: 1, _id: 0 } }
+        ]).toArray();
+        res.json(animeData);
+    } catch (err) {
+        console.error("Error fetching anime data:", err);
+        res.status(500).json({ error: "Internal Server Error" });
+    }
+});
 
 // Lancer le serveur sur le port 3000
 const PORT = 3000;

@@ -1,7 +1,15 @@
 <template>
-  <CharacterList />
+  <v-app>
+    <v-main>
+      <router-view />
+    </v-main>
+  </v-app>
 </template>
 
 <script setup lang="ts">
-import CharacterList from './components/CharacterList.vue';
+
 </script>
+
+<style scoped>
+
+</style>

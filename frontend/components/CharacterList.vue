@@ -1,6 +1,12 @@
 <template>
   <v-container>
     <v-row>
+      <v-col cols="12">
+        <v-btn color="primary" @click="goToGraphPage">Graph</v-btn>
+      </v-col>
+    </v-row>
+
+    <v-row>
       <!-- Sélectionner un anime -->
       <v-col cols="12" sm="6">
         <v-select
@@ -41,13 +47,15 @@
 <script lang="ts">
 import { defineComponent, ref, onMounted, watch } from 'vue';
 import axios from 'axios';
+import { useRouter } from 'vue-router';
 
 export default defineComponent({
   name: 'CharacterList',
   setup() {
     const animes = ref<string[]>([]); // Liste des anime
     const selectedAnime = ref<string>(''); // Anime sélectionné
-    const characters = ref<string[]>([]); // Liste des personnages
+    const characters = ref<string[]>([]);
+    const router = useRouter();
 
     // Fonction pour récupérer la liste des animes depuis le backend
     const fetchAnimes = async () => {
@@ -86,7 +94,12 @@ export default defineComponent({
       fetchAnimes();
     });
 
+    const goToGraphPage = () => {
+      router.push('/graph');
+    };
+
     return {
+      goToGraphPage,
       animes,
       selectedAnime,
       characters,
