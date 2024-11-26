@@ -6,8 +6,8 @@ import * as components from 'vuetify/components';
 import * as directives from 'vuetify/directives';
 import 'vuetify/styles'; // Importer les styles de base
 import '@mdi/font/css/materialdesignicons.css';
-import CharacterList from "./components/CharacterList.vue";
-import Graph from "./components/Graph.vue";
+import CharacterList from "./views/CharacterList.vue";
+import Graph from "./views/Graph.vue";
 import {createRouter, createWebHistory} from "vue-router";
 
 const vuetify = createVuetify({

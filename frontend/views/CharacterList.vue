@@ -21,8 +21,21 @@
 
     <!-- Liste des personnages -->
     <v-row v-if="characters.length > 0">
-      <v-col v-for="(character, index) in characters" :key="index" cols="12" sm="4">
+      <v-col
+          v-for="(character, index) in characters"
+          :key="index"
+          cols="12"
+          sm="4"
+      >
         <v-card>
+          <!-- Image du personnage -->
+          <v-img
+              :src="getCharacterImage(character)"
+              lazy-src="../../images/default-placeholder.png"
+              aspect-ratio="1"
+              alt="Image de {{ character }}"
+          ></v-img>
+          <!-- Nom du personnage -->
           <v-card-title>{{ character }}</v-card-title>
         </v-card>
       </v-col>
@@ -57,6 +70,8 @@ export default defineComponent({
     const characters = ref<string[]>([]);
     const router = useRouter();
 
+    const baseImageUrl = 'http://localhost:3000/images'; // Base URL des images
+
     // Fonction pour récupérer la liste des animes depuis le backend
     const fetchAnimes = async () => {
       try {
@@ -84,6 +99,11 @@ export default defineComponent({
       }
     };
 
+    const getCharacterImage = (character: string) => {
+      if (!selectedAnime.value) return '';
+      return `../images/${selectedAnime.value}/${character}.png`;
+    };
+
     // Watch sur selectedAnime pour déclencher l'appel à fetchCharacters lorsqu'il change
     watch(selectedAnime, () => {
       fetchCharacters();
@@ -104,6 +124,7 @@ export default defineComponent({
       selectedAnime,
       characters,
       fetchCharacters,
+      getCharacterImage
     };
   },
 });

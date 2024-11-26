@@ -4,19 +4,13 @@ import cors from 'cors';
 import bodyParser from 'body-parser';
 import { MongoClient } from 'mongodb';
 
+const url = 'mongodb://localhost:27017';
+const client = new MongoClient(url);
+
 // Connexion à la base de données
 const dbName = 'test';
-const url = 'mongodb+srv://Ilyane:Animes@cluster0.lpoye.mongodb.net/';
-
-// Création du client MongoDB
-const client = new MongoClient(url, {
-    tls: true, // Assure l'utilisation de TLS si MongoDB Cluster le nécessite
-    tlsAllowInvalidCertificates: true, // Autorise les certificats auto-signés pour les environnements de développement
-});
-
-// Déclaration de variables pour la base et la collection
-let db;
-let collection;
+export const db = client.db(dbName);
+const collection = db.collection('animes');
 
 // Création de l'application Express
 const app = express();
@@ -25,21 +19,13 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cors());
 
 // Connexion à MongoDB
-async function connectToMongoDB() {
-    try {
-        // Connexion au client MongoDB
-        await client.connect();
-        console.log('Connected to MongoDB');
-
-        // Initialisation de la base de données et de la collection
-        db = client.db(dbName);
-        collection = db.collection('animes');
-        console.log(`Database: "${dbName}" and Collection: "animes" initialized`);
-    } catch (error) {
-        console.error('Error connecting to MongoDB:', error);
-        process.exit(1); // Arrête l'application si la connexion échoue
-    }
-}
+client.connect()
+    .then(() => {
+        console.log("Connected to MongoDB");
+    })
+    .catch((error) => {
+        console.error("Error connecting to MongoDB", error);
+    });
 
 // Route pour récupérer les 20 premiers documents
 app.get('/api/animes', async (req, res) => {
@@ -107,12 +93,10 @@ app.get('/api/graph/animes', async (req, res) => {
     }
 });
 
-// Lancer le serveur après avoir établi la connexion à MongoDB
-connectToMongoDB().then(() => {
-    const PORT = process.env.PORT || 3000;
-    app.listen(PORT, () => {
-        console.log(`Server is running on port ${PORT}`);
-    });
+// Lancer le serveur sur le port 3000
+const PORT = 3000;
+app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
 });
 
 export default app;

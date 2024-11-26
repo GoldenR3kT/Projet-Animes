@@ -10,15 +10,18 @@
     <v-row>
       <v-col cols="12" sm="4">
         <h3>Répartition par MBTI</h3>
-        <line-chart :data="mbtiData" :options="chartOptions" />
+        <line-chart v-if="mbtiData.labels.length" :data="mbtiData" :options="chartOptions" />
+        <v-alert v-else type="info" border="start">Chargement des données MBTI...</v-alert>
       </v-col>
       <v-col cols="12" sm="4">
         <h3>Répartition par Ennéagramme</h3>
-        <line-chart :data="enneagramData" :options="chartOptions" />
+        <line-chart v-if="enneagramData.labels.length" :data="enneagramData" :options="chartOptions" />
+        <v-alert v-else type="info" border="start">Chargement des données Ennéagramme...</v-alert>
       </v-col>
       <v-col cols="12" sm="4">
         <h3>Nombre de Personnages par Anime</h3>
-        <bar-chart :data="animeData" :options="chartOptions" />
+        <bar-chart v-if="animeData.labels.length" :data="animeData" :options="chartOptions" />
+        <v-alert v-else type="info" border="start">Chargement des données des Animes...</v-alert>
       </v-col>
     </v-row>
   </v-container>
@@ -46,9 +49,18 @@ export default defineComponent({
     };
 
     // Définition des données de graphiques
-    const mbtiData = ref<any>(null);
-    const enneagramData = ref<any>(null);
-    const animeData = ref<any>(null);
+    const mbtiData = ref({
+      labels: [],
+      datasets: [],
+    });
+    const enneagramData = ref({
+      labels: [],
+      datasets: [],
+    });
+    const animeData = ref({
+      labels: [],
+      datasets: [],
+    });
 
     // Configuration des options du graphique
     const chartOptions: ChartOptions = {
@@ -117,6 +129,11 @@ export default defineComponent({
         };
       } catch (error) {
         console.error('Error fetching graph data:', error);
+
+        // En cas d'erreur, définissez des valeurs par défaut pour éviter les plantages
+        mbtiData.value = { labels: [], datasets: [] };
+        enneagramData.value = { labels: [], datasets: [] };
+        animeData.value = { labels: [], datasets: [] };
       }
     };
 
