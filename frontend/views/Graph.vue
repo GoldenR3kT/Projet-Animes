@@ -1,12 +1,7 @@
 <template>
   <v-container>
-    <v-row>
-      <v-col cols="12">
+    <NavBar />
         <h1>Graphiques des Personnages</h1>
-        <v-btn color="primary" @click="goBack">Retour</v-btn>
-      </v-col>
-    </v-row>
-
     <v-row>
       <v-col cols="12" sm="4">
         <h3>Répartition par MBTI</h3>
@@ -32,12 +27,14 @@ import { defineComponent, ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import { Line, Bar } from 'vue-chartjs';
 import { Chart as ChartJS, Title, Tooltip, Legend, CategoryScale, LinearScale, BarElement, PointElement, LineElement, ChartOptions } from 'chart.js';
+import NavBar from "../components/NavBar.vue";
 
 // Enregistrement des composants de Chart.js
 ChartJS.register(Title, Tooltip, Legend, CategoryScale, LinearScale, BarElement, PointElement, LineElement);
 
 export default defineComponent({
   components: {
+    NavBar,
     LineChart: Line,
     BarChart: Bar,
   },

@@ -1,5 +1,6 @@
 <template>
   <v-container>
+    <NavBar />
     <v-row>
       <v-col cols="12">
         <v-btn color="primary" @click="goToGraphPage">Graph</v-btn>
@@ -61,9 +62,11 @@
 import { defineComponent, ref, onMounted, watch } from 'vue';
 import axios from 'axios';
 import { useRouter } from 'vue-router';
+import NavBar from "../components/NavBar.vue";
 
 export default defineComponent({
   name: 'CharacterList',
+  components: {NavBar},
   setup() {
     const animes = ref<string[]>([]); // Liste des anime
     const selectedAnime = ref<string>(''); // Anime sélectionné
