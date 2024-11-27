@@ -28,7 +28,7 @@
           cols="12"
           sm="4"
       >
-        <v-card>
+        <v-card @click="goToCharacterDetail(character)" class="hover-card" outlined>
           <!-- Image du personnage -->
           <v-img
               :src="getCharacterImage(character)"
@@ -107,6 +107,10 @@ export default defineComponent({
       return `../images/${selectedAnime.value}/${character}.png`;
     };
 
+    const goToCharacterDetail = (character: string) => {
+      router.push({ name: 'CharacterDetail', params: { anime: selectedAnime.value, character } });
+    };
+
     // Watch sur selectedAnime pour déclencher l'appel à fetchCharacters lorsqu'il change
     watch(selectedAnime, () => {
       fetchCharacters();
@@ -127,12 +131,21 @@ export default defineComponent({
       selectedAnime,
       characters,
       fetchCharacters,
-      getCharacterImage
+      getCharacterImage,
+      goToCharacterDetail
     };
   },
 });
 </script>
 
 <style scoped>
+
+.hover-card {
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+.hover-card:hover {
+  transform: scale(1.05);
+}
 
 </style>

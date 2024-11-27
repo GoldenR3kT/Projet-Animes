@@ -8,6 +8,7 @@ import 'vuetify/styles'; // Importer les styles de base
 import '@mdi/font/css/materialdesignicons.css';
 import CharacterList from "./views/CharacterList.vue";
 import Graph from "./views/Graph.vue";
+import CharacterDetail from './views/CharacterDetail.vue';
 import {createRouter, createWebHistory} from "vue-router";
 
 const vuetify = createVuetify({
@@ -18,6 +19,12 @@ const vuetify = createVuetify({
 const routes = [
     { path: '/', component: CharacterList },
     { path: '/graph', component: Graph },
+    {
+        path: '/details/:anime/:character',
+        name: 'CharacterDetail',
+        component: CharacterDetail,
+        props: true,
+    },
 ];
 
 const router = createRouter({

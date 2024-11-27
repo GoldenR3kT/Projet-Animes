@@ -1,26 +1,56 @@
 <template>
   <v-container>
     <NavBar />
-        <h1>Graphiques des Personnages</h1>
     <v-row>
-      <v-col cols="12" sm="4">
-        <h3>Répartition par MBTI</h3>
-        <line-chart v-if="mbtiData.labels.length" :data="mbtiData" :options="chartOptions" />
+      <v-col cols="12">
+        <h1 class="text-center mt-5">Graphiques des Personnages</h1>
+      </v-col>
+    </v-row>
+
+    <!-- Répartition par MBTI -->
+    <v-row class="mb-5 mt-5">
+      <v-col cols="12">
+        <h3 class="text-center">Répartition par MBTI</h3>
+        <line-chart
+            v-if="mbtiData.labels.length"
+            :data="mbtiData"
+            :options="chartOptions"
+            class="chart"
+        />
         <v-alert v-else type="info" border="start">Chargement des données MBTI...</v-alert>
       </v-col>
-      <v-col cols="12" sm="4">
-        <h3>Répartition par Ennéagramme</h3>
-        <line-chart v-if="enneagramData.labels.length" :data="enneagramData" :options="chartOptions" />
+    </v-row>
+
+    <!-- Répartition par Ennéagramme -->
+    <v-row class="mb-5">
+      <v-col cols="12">
+        <h3 class="text-center">Répartition par Ennéagramme</h3>
+        <line-chart
+            v-if="enneagramData.labels.length"
+            :data="enneagramData"
+            :options="chartOptions"
+            class="chart"
+        />
         <v-alert v-else type="info" border="start">Chargement des données Ennéagramme...</v-alert>
       </v-col>
-      <v-col cols="12" sm="4">
-        <h3>Nombre de Personnages par Anime</h3>
-        <bar-chart v-if="animeData.labels.length" :data="animeData" :options="chartOptions" />
+    </v-row>
+
+    <!-- Nombre de Personnages par Anime -->
+    <v-row class="mb-5">
+      <v-col cols="12">
+        <h3 class="text-center">Nombre de Personnages par Anime</h3>
+        <bar-chart
+            v-if="animeData.labels.length"
+            :data="animeData"
+            :options="chartOptions"
+            class="chart"
+        />
         <v-alert v-else type="info" border="start">Chargement des données des Animes...</v-alert>
       </v-col>
     </v-row>
   </v-container>
 </template>
+
 
 <script lang="ts">
 import { defineComponent, ref, onMounted } from 'vue';

@@ -5,7 +5,7 @@
 
     <!-- Titre centré -->
     <v-spacer></v-spacer>
-    <v-toolbar-title class="text-center">Anime Database</v-toolbar-title>
+    <v-toolbar-title class="text-center">Animes Characters Personnality</v-toolbar-title>
     <v-spacer></v-spacer>
 
     <!-- Bouton Graphiques tout à droite -->

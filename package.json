@@ -3,10 +3,10 @@
   "private": true,
   "version": "0.0.0",
   "scripts": {
-    "dev": "vite",
+    "front": "vite",
     "build": "vue-tsc -b && vite build",
     "preview": "vite preview",
-    "start": "nodemon backend/server.ts"
+    "back": "nodemon backend/server.ts"
   },
   "dependencies": {
     "@mdi/font": "^7.4.47",

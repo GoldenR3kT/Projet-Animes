@@ -93,6 +93,18 @@ app.get('/api/graph/animes', async (req, res) => {
     }
 });
 
+app.get('/api/animes/:animeName/characters/:characterName', async (req, res) => {
+    const animeName = req.params.animeName;
+    const characterName = req.params.characterName;
+    try {
+        const character = await collection.findOne({ anime_name: animeName, character_name: characterName });
+        res.json(character);
+    } catch (err) {
+        console.error("Error fetching character:", err);
+        res.status(500).json({ error: "Internal Server Error" });
+    }
+});
+
 // Lancer le serveur sur le port 3000
 const PORT = 3000;
 app.listen(PORT, () => {
