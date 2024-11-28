@@ -1,11 +1,6 @@
 <template>
   <v-container>
     <NavBar />
-    <v-row>
-      <v-col cols="12">
-        <v-btn color="primary" @click="goToGraphPage">Graph</v-btn>
-      </v-col>
-    </v-row>
 
     <v-row>
       <!-- Sélectionner un anime -->
