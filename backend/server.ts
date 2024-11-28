@@ -105,6 +105,71 @@ app.get('/api/animes/:animeName/characters/:characterName', async (req, res) => 
     }
 });
 
+app.get('/api/animes/:animeName/gender', async (req, res) => {
+    const animeName = req.params.animeName;
+
+    try {
+        const genderData = await collection.aggregate([
+            { $match: { anime_name: animeName } }, // Filtre pour l'anime donné
+            {
+                $group: {
+                    _id: '$character_gender',
+                    count: { $sum: 1 }
+                }
+            },
+            {
+                $project: {
+                    gender: '$_id',
+                    count: 1,
+                    _id: 0
+                }
+            }
+        ]).toArray();
+
+        // Transformation des données pour un format plus compréhensible
+        const result = {
+            male: genderData.find(g => g.gender === 'm')?.count || 0,
+            female: genderData.find(g => g.gender === 'f')?.count || 0
+        };
+
+        res.json(result);
+    } catch (err) {
+        console.error("Error fetching gender data:", err);
+        res.status(500).json({ error: "Internal Server Error" });
+    }
+});
+
+app.get('/api/graph/gender', async (req, res) => {
+    try {
+        const genderData = await collection.aggregate([
+            {
+                $group: {
+                    _id: '$anime_name',
+                    male_count: {
+                        $sum: { $cond: [{ $eq: ['$character_gender', 'm'] }, 1, 0] }
+                    },
+                    female_count: {
+                        $sum: { $cond: [{ $eq: ['$character_gender', 'f'] }, 1, 0] }
+                    }
+                }
+            },
+            {
+                $project: {
+                    anime_name: '$_id',
+                    male_count: 1,
+                    female_count: 1,
+                    _id: 0
+                }
+            }
+        ]).toArray();
+
+        res.json(genderData);
+    } catch (err) {
+        console.error("Error fetching gender data:", err);
+        res.status(500).json({ error: "Internal Server Error" });
+    }
+});
+
 // Lancer le serveur sur le port 3000
 const PORT = 3000;
 app.listen(PORT, () => {

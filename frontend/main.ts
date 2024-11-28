@@ -10,6 +10,7 @@ import CharacterList from "./views/CharacterList.vue";
 import Graph from "./views/Graph.vue";
 import CharacterDetail from './views/CharacterDetail.vue';
 import {createRouter, createWebHistory} from "vue-router";
+import GenderRepartition from "./views/GenderRepartition.vue";
 
 const vuetify = createVuetify({
     components,
@@ -25,6 +26,7 @@ const routes = [
         component: CharacterDetail,
         props: true,
     },
+    { path: '/genders', component: GenderRepartition },
 ];
 
 const router = createRouter({
