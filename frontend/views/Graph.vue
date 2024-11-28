@@ -7,13 +7,25 @@
       </v-col>
     </v-row>
 
+    <v-row>
+      <v-col cols="12" class="text-center mb-5">
+        <v-select
+            v-model="selectedAnime"
+            :items="animeList"
+            label="Sélectionnez un Anime"
+            clearable
+            outlined
+        ></v-select>
+      </v-col>
+    </v-row>
+
     <!-- Répartition par MBTI -->
     <v-row class="mb-5 mt-5">
       <v-col cols="12">
         <h3 class="text-center">Répartition par MBTI</h3>
         <line-chart
-            v-if="mbtiData.labels.length"
-            :data="mbtiData"
+            v-if="filteredMbtiData.labels.length"
+            :data="filteredMbtiData"
             :options="chartOptions"
             class="chart"
         />
@@ -26,8 +38,8 @@
       <v-col cols="12">
         <h3 class="text-center">Répartition par Ennéagramme</h3>
         <line-chart
-            v-if="enneagramData.labels.length"
-            :data="enneagramData"
+            v-if="filteredEnneagramData.labels.length"
+            :data="filteredEnneagramData"
             :options="chartOptions"
             class="chart"
         />
@@ -40,8 +52,8 @@
       <v-col cols="12">
         <h3 class="text-center">Nombre de Personnages par Anime</h3>
         <bar-chart
-            v-if="animeData.labels.length"
-            :data="animeData"
+            v-if="filteredAnimeData.labels.length"
+            :data="filteredAnimeData"
             :options="chartOptions"
             class="chart"
         />
@@ -53,7 +65,7 @@
 
 
 <script lang="ts">
-import { defineComponent, ref, onMounted } from 'vue';
+import {defineComponent, ref, onMounted, computed} from 'vue';
 import { useRouter } from 'vue-router';
 import { Line, Bar } from 'vue-chartjs';
 import { Chart as ChartJS, Title, Tooltip, Legend, CategoryScale, LinearScale, BarElement, PointElement, LineElement, ChartOptions } from 'chart.js';
@@ -74,6 +86,9 @@ export default defineComponent({
     const goBack = () => {
       router.push('/');
     };
+
+    const animeList = ref<string[]>([]);
+    const selectedAnime = ref<string | null>(null);
 
     // Définition des données de graphiques
     const mbtiData = ref({
@@ -107,11 +122,14 @@ export default defineComponent({
     // Récupérer les données pour chaque graphique
     const fetchGraphData = async () => {
       try {
-        const [mbtiResponse, enneagramResponse, animeResponse] = await Promise.all([
+        const [animeNames, mbtiResponse, enneagramResponse, animeResponse] = await Promise.all([
+          fetch('http://localhost:3000/api/animes').then((res) => res.json()),
           fetch('http://localhost:3000/api/graph/mbti').then((res) => res.json()),
           fetch('http://localhost:3000/api/graph/enneagram').then((res) => res.json()),
           fetch('http://localhost:3000/api/graph/animes').then((res) => res.json()),
         ]);
+
+        animeList.value = animeNames;
 
         // Préparation des données pour le graphique MBTI
         mbtiData.value = {
@@ -164,15 +182,46 @@ export default defineComponent({
       }
     };
 
+    // Fonction pour filtrer les données en fonction de l'anime sélectionné
+    const filterData = (data: any, field: string) => {
+      if (!selectedAnime.value) return data; // Pas de filtre si aucun anime sélectionné
+      const filteredLabels: string[] = [];
+      const filteredCounts: number[] = [];
+      data.labels.forEach((label: string, index: number) => {
+        if (label === selectedAnime.value) {
+          filteredLabels.push(label);
+          filteredCounts.push(data.datasets[0].data[index]);
+        }
+      });
+      return {
+        labels: filteredLabels,
+        datasets: [
+          {
+            ...data.datasets[0],
+            data: filteredCounts,
+          },
+        ],
+      };
+    };
+
+    const filteredMbtiData = computed(() => filterData(mbtiData.value, 'mbti'));
+    const filteredEnneagramData = computed(() => filterData(enneagramData.value, 'enneagram'));
+    const filteredAnimeData = computed(() => filterData(animeData.value, 'anime'));
+
     // Récupérer les données au montage
     onMounted(() => {
       fetchGraphData();
     });
 
     return {
+      selectedAnime,
+      animeList,
       mbtiData,
       enneagramData,
       animeData,
+      filteredMbtiData,
+      filteredEnneagramData,
+      filteredAnimeData,
       chartOptions,
       goBack,
     };
