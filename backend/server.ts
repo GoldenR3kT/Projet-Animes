@@ -3,10 +3,6 @@ import express from 'express';
 import cors from 'cors';
 import bodyParser from 'body-parser';
 import { MongoClient } from 'mongodb';
-import multer from 'multer';
-import path from 'path';
-import fs from 'fs';
-
 
 const url = 'mongodb://localhost:27017';
 const client = new MongoClient(url);
@@ -173,59 +169,6 @@ app.get('/api/graph/gender', async (req, res) => {
         res.status(500).json({ error: "Internal Server Error" });
     }
 });
-
-// Configuration de Multer
-const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        const animeName = req.body.anime;
-        const rootDir = path.resolve(__dirname, '..');
-        const animeDir = path.join(rootDir, 'images', animeName);
-
-        // Vérifier si le dossier de l'anime existe, sinon le créer
-        if (!fs.existsSync(animeDir)) {
-            fs.mkdirSync(animeDir, { recursive: true });
-        }
-
-        cb(null, animeDir);
-    },
-    filename: (req, file, cb) => {
-        const characterName = req.body.name;
-        const extension = path.extname(file.originalname);
-        cb(null, `${characterName}${extension}`);
-    },
-});
-
-
-// Middleware Multer
-const upload = multer({ storage });
-
-app.post('/api/characters', upload.single('image'), async (req, res) => {
-    const { name, anime, animeGenre, mbti, enneagram, gender } = req.body;
-
-    try {
-        // Insérer les données du personnage dans la base de données
-        const result = await collection.insertOne({
-            anime_name: anime,
-            anime_genre: animeGenre,
-            character_name: name,
-            character_mbti_type: mbti,
-            character_enneagram_type: enneagram,
-            character_gender: gender,
-        });
-
-        res.status(201).json({
-            message: 'Personnage ajouté avec succès',
-            id: result.insertedId,
-            imagePath: req.file.path,
-        });
-    } catch (err) {
-        console.error("Erreur lors de l'ajout du personnage :", err);
-        res.status(500).json({ error: "Erreur lors de l'ajout du personnage" });
-    }
-});
-
-
-
 
 // Lancer le serveur sur le port 3000
 const PORT = 3000;
