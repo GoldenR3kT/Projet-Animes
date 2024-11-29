@@ -14,6 +14,16 @@
               dense
           ></v-text-field>
 
+          <v-select
+              v-model="character.animeGenre"
+              :items="animeGenre"
+              label="Genre de l'anime"
+              :rules="[rules.required]"
+              outlined
+              dense
+          ></v-select>
+
+
           <v-file-input
               v-model="character.image"
               label="Image du personnage"
@@ -98,6 +108,7 @@ export default defineComponent({
     const character = ref({
       name: '',
       anime: '',
+      animeGenre: '',
       mbti: '',
       enneagram: '',
       gender: '',
@@ -107,7 +118,70 @@ export default defineComponent({
     const genders = ref<string[]>(['m', 'f']);
 
     // Liste des options
-    const animeList = ref<string[]>([]);
+    const animeList = ref<string[]>(['Ansatsu Kyoushitsu',
+      'Banana Fish',
+      'Beastars',
+      'Berserk',
+      'Bishoujo Senshi Sailor Moon',
+      'Bleach',
+      'Boku no Hero Academia',
+      'Bungou Stray Dogs',
+      'Chainsaw Man',
+      'Code Geass',
+      'Darling in the Franxx',
+      'Death Note',
+      'Dr. Stone',
+      'Dragon Ball Z',
+      'Fairy Tail',
+      'Fruits Basket (2019)',
+      'Fullmetal Alchemist: Brotherhood',
+      'Haikyuu!!',
+      'Hetalia: Axis Powers',
+      'Howl no Ugoku Shiro',
+      'Hunter X Hunter',
+      'Hyouka',
+      'Jibaku Shounen Hanako-kun',
+      'JoJo no Kimyou na Bouken',
+      'Jujutsu Kaisen',
+      'Kaguya-sama wa Kokurasetai: Tensai-tachi no Renai Zunousen',
+      'Kakegurui',
+      'Kimetsu no Yaiba',
+      'Koe no Katachi',
+      'Komi-san wa, Komyushou desu.',
+      'Mahou Shoujo Madoka★Magica',
+      'Mirai Nikki',
+      'Mob Psycho 100',
+      'Monster',
+      'Naruto Shippūden',
+      'Neon Genesis Evangelion',
+      'One Piece',
+      'Ouran Koukou Host Club',
+      'Owari no Seraph',
+      'Pokémon',
+      'Re:Zero Kara Hajimeru Isekai Seikatsu',
+      'SK∞',
+      'Saiki Kusuo no Psi-nan',
+      'Shingeki no Kyojin',
+      'Tokyo Ghoul',
+      'Tokyo Revengers',
+      'Wonder Egg Priority',
+      'Yakusoku no Neverland',
+      'Youkoso Jitsuryoku Shijou no Kyoushitsu',
+      'Yuukoku no Moriarty',]);
+
+    const animeGenre = ref<string[]>(['Shounen',
+      'Shoujo',
+      'Seinen',
+      'Josei',
+      'Isekai',
+      'Mecha',
+      'Slice of Life',
+      'Fantasy',
+      'Horror',
+      'Comedy',
+      'Drama',
+      'Adventure',
+      'Action',]);
     const mbtiTypes = ref<string[]>([
       'INTJ',
       'INTP',
@@ -156,6 +230,7 @@ export default defineComponent({
       // Ajouter les champs au formulaire
       formData.append('name', character.value.name);
       formData.append('anime', character.value.anime);
+      formData.append('animeGenre', character.value.animeGenre);
       formData.append('mbti', character.value.mbti);
       formData.append('enneagram', character.value.enneagram);
       formData.append('gender', character.value.gender);
@@ -183,11 +258,13 @@ export default defineComponent({
     };
 
 
+
     // Réinitialisation du formulaire
     const resetForm = () => {
       character.value = {
         name: '',
         anime: '',
+        animeGenre: '',
         mbti: '',
         enneagram: '',
         gender: '',
@@ -205,6 +282,7 @@ export default defineComponent({
       isFormValid,
       character,
       animeList,
+      animeGenre,
       mbtiTypes,
       enneagramTypes,
       rules,
