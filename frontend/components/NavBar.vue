@@ -5,8 +5,10 @@
 
     <!-- Titre centré -->
     <v-spacer></v-spacer>
-    <v-toolbar-title class="text-center">Animes Characters Visualsation</v-toolbar-title>
+    <h1 class="text-center">Animes Characters Visualsation</h1>
     <v-spacer></v-spacer>
+
+    <v-btn text @click="goToAddCharacter">Ajouter un personnage</v-btn>
 
     <!-- Bouton Graphiques tout à droite -->
     <v-btn text @click="goToGraphs">Graphiques</v-btn>
@@ -30,9 +32,14 @@ export default defineComponent({
       router.push('/graph');
     };
 
+    const goToAddCharacter = () => {
+      router.push('/addCharacter')
+    }
+
     return {
       goToHome,
       goToGraphs,
+      goToAddCharacter,
     };
   },
 });
