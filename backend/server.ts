@@ -178,7 +178,8 @@ app.get('/api/graph/gender', async (req, res) => {
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
         const animeName = req.body.anime; // Récupérer le nom de l'anime depuis le formulaire
-        const animeDir = path.join(__dirname, 'images', animeName);
+        const rootDir = path.resolve(__dirname, '..'); // Accéder à la racine du projet
+        const animeDir = path.join(rootDir, 'images', animeName); // Créer le chemin complet vers images/AnimeName
 
         // Vérifier si le dossier de l'anime existe, sinon le créer
         if (!fs.existsSync(animeDir)) {
