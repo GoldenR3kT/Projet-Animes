@@ -249,6 +249,25 @@ app.get('/api/characters/search', async (req, res) => {
     }
 });
 
+// Route pour supprimer un personnage
+app.delete('/api/animes/:animeName/characters/:characterName', async (req, res) => {
+    const animeName = req.params.animeName;
+    const characterName = req.params.characterName;
+    try {
+        const result = await collection.deleteOne({ anime_name: animeName, character_name: characterName });
+
+        if (result.deletedCount === 1) {
+            res.json({ message: `Personnage ${characterName} supprimé avec succès.` });
+        } else {
+            res.status(404).json({ error: 'Personnage non trouvé' });
+        }
+    } catch (err) {
+        console.error("Error deleting character:", err);
+        res.status(500).json({ error: "Erreur lors de la suppression du personnage" });
+    }
+});
+
+
 // Lancer le serveur sur le port 3000
 const PORT = 3000;
 app.listen(PORT, () => {

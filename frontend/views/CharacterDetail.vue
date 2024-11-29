@@ -37,6 +37,7 @@
     <v-row class="mt-5">
       <v-col cols="12" class="text-center">
         <v-btn color="primary" @click="editMode = true">Modifier</v-btn>
+        <v-btn color="error" @click="deleteCharacter" class="ml-2">Supprimer</v-btn>
       </v-col>
     </v-row>
 
@@ -161,6 +162,25 @@ export default defineComponent({
       fetchCharacterDetails();
     });
 
+    const deleteCharacter = async () => {
+      try {
+        const confirmation = confirm(`Êtes-vous sûr de vouloir supprimer ${characterName.value} ?`);
+        if (confirmation) {
+          await axios.delete(
+              `http://localhost:3000/api/animes/${encodeURIComponent(animeName.value)}/characters/${encodeURIComponent(characterName.value)}`
+          );
+
+          // Rediriger l'utilisateur après la suppression
+          alert(`${characterName.value} a été supprimé avec succès.`);
+          router.push({ name: 'CharacterList', params: { anime: animeName.value } });
+        }
+      } catch (error) {
+        console.error('Erreur lors de la suppression du personnage:', error);
+        alert('Erreur lors de la suppression du personnage.');
+      }
+    };
+
+
     return {
       animeName,
       characterName,
@@ -172,6 +192,7 @@ export default defineComponent({
       cancelEdit,
       getCharacterImage,
       genderText,
+      deleteCharacter,
     };
   },
 });
