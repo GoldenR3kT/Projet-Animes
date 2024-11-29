@@ -60,6 +60,20 @@
         <v-alert v-else type="info" border="start">Chargement des données des Animes...</v-alert>
       </v-col>
     </v-row>
+
+    <v-row class="mb-5 mt-5">
+      <v-col cols="12">
+        <h3 class="text-center">Répartition des Genres par Anime</h3>
+        <bar-chart
+            v-if="genderData.labels.length"
+            :data="genderData"
+            :options="chartOptions"
+            class="chart"
+        />
+        <v-alert v-else type="info" border="start">Chargement des données sur les genres...</v-alert>
+      </v-col>
+    </v-row>
+
   </v-container>
 </template>
 
@@ -103,6 +117,10 @@ export default defineComponent({
       labels: [],
       datasets: [],
     });
+    const genderData = ref({
+      labels: [],
+      datasets: [],
+    });
 
     // Configuration des options du graphique
     const chartOptions: ChartOptions = {
@@ -122,11 +140,12 @@ export default defineComponent({
     // Récupérer les données pour chaque graphique
     const fetchGraphData = async () => {
       try {
-        const [animeNames, mbtiResponse, enneagramResponse, animeResponse] = await Promise.all([
+        const [animeNames, mbtiResponse, enneagramResponse, animeResponse,genderResponse] = await Promise.all([
           fetch('http://localhost:3000/api/animes').then((res) => res.json()),
           fetch('http://localhost:3000/api/graph/mbti').then((res) => res.json()),
           fetch('http://localhost:3000/api/graph/enneagram').then((res) => res.json()),
           fetch('http://localhost:3000/api/graph/animes').then((res) => res.json()),
+          fetch('http://localhost:3000/api/graph/gender').then((res) => res.json()),
         ]);
 
         animeList.value = animeNames;
@@ -172,6 +191,33 @@ export default defineComponent({
             },
           ],
         };
+
+        const labels = genderResponse.map((anime: any) => anime.anime_name); // Noms des animes
+        const maleCounts = genderResponse.map((anime: any) => anime.male_count); // Nombre d'hommes
+        const femaleCounts = genderResponse.map((anime: any) => anime.female_count); // Nombre de femmes
+
+
+        genderData.value = {
+          labels,
+          datasets: [
+            {
+              label: 'Hommes',
+              data: maleCounts,
+              backgroundColor: 'rgba(54, 162, 235, 0.8)',
+              borderColor: 'rgba(54, 162, 235, 1)',
+              borderWidth: 1,
+            },
+            {
+              label: 'Femmes',
+              data: femaleCounts,
+              backgroundColor: 'rgba(255, 99, 132, 0.8)',
+              borderColor: 'rgba(255, 99, 132, 1)',
+              borderWidth: 1,
+            },
+          ],
+        };
+
+
       } catch (error) {
         console.error('Error fetching graph data:', error);
 
@@ -224,6 +270,7 @@ export default defineComponent({
       filteredAnimeData,
       chartOptions,
       goBack,
+      genderData,
     };
   },
 });
