@@ -267,6 +267,28 @@ app.delete('/api/animes/:animeName/characters/:characterName', async (req, res) 
     }
 });
 
+app.put('/api/animes/:animeName/characters/:characterName', async (req, res) => {
+    const animeName = req.params.animeName;
+    const characterName = req.params.characterName;
+    const updatedData = req.body;
+
+    try {
+        const result = await collection.updateOne(
+            { anime_name: animeName, character_name: characterName },
+            { $set: updatedData }
+        );
+
+        if (result.modifiedCount > 0) {
+            res.status(200).json({ message: "Character updated successfully." });
+        } else {
+            res.status(404).json({ error: "Character not found or no changes made." });
+        }
+    } catch (err) {
+        console.error("Error updating character:", err);
+        res.status(500).json({ error: "Internal Server Error" });
+    }
+});
+
 
 // Lancer le serveur sur le port 3000
 const PORT = 3000;
