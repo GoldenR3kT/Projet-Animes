@@ -230,7 +230,6 @@ export default defineComponent({
       // Ajouter les champs au formulaire
       formData.append('name', character.value.name);
       formData.append('anime', character.value.anime);
-      formData.append('animeGenre', character.value.animeGenre);
       formData.append('mbti', character.value.mbti);
       formData.append('enneagram', character.value.enneagram);
       formData.append('gender', character.value.gender);
@@ -256,7 +255,6 @@ export default defineComponent({
         console.error('Erreur réseau:', error);
       }
     };
-
 
 
     // Réinitialisation du formulaire
