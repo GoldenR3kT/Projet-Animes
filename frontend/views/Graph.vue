@@ -183,8 +183,8 @@ export default defineComponent({
     };
 
     // Fonction pour filtrer les données en fonction de l'anime sélectionné
-    const filterData = (data: any, field: string) => {
-      if (!selectedAnime.value) return data; // Pas de filtre si aucun anime sélectionné
+    const filterData = (data: any) => {
+      if (!selectedAnime.value) return data;
       const filteredLabels: string[] = [];
       const filteredCounts: number[] = [];
       data.labels.forEach((label: string, index: number) => {
