@@ -222,8 +222,32 @@ app.post('/api/characters', upload.single('image'), async (req, res) => {
     }
 });
 
+// Route pour rechercher un personnage par nom et anime
+app.get('/api/characters/search', async (req, res) => {
+    const { name, anime } = req.query;
 
+    const query: any = {};
 
+    // Si un anime est sélectionné, ajouter le filtre
+    if (anime) {
+        query.anime_name = anime;
+    }
+
+    // Si un nom de personnage est fourni, ajouter le filtre
+    if (name) {
+        query.character_name = { $regex: new RegExp(name as string, 'i') };
+    }
+
+    try {
+        // Recherche des personnages correspondant aux critères
+        const characters = await collection.find(query).toArray();
+        const characterNames = characters.map((character: any) => character.character_name);
+        res.json(characterNames);
+    } catch (err) {
+        console.error("Error searching characters:", err);
+        res.status(500).json({ error: "Internal Server Error" });
+    }
+});
 
 // Lancer le serveur sur le port 3000
 const PORT = 3000;

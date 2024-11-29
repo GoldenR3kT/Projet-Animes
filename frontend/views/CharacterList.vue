@@ -10,8 +10,20 @@
             label="Choisir un anime"
             v-model="selectedAnime"
             @change="fetchCharacters"
-        outlined
+            clearable
+            outlined
         ></v-select>
+      </v-col>
+
+      <!-- Barre de recherche -->
+      <v-col cols="12" sm="6">
+        <v-text-field
+            v-model="searchQuery"
+            label="Rechercher un personnage"
+            @input="searchCharacters"
+            clearable
+            outlined
+        ></v-text-field>
       </v-col>
     </v-row>
 
@@ -66,6 +78,7 @@ export default defineComponent({
     const animes = ref<string[]>([]); // Liste des anime
     const selectedAnime = ref<string>(''); // Anime sélectionné
     const characters = ref<string[]>([]);
+    const searchQuery = ref<string>(''); // Texte de recherche
     const router = useRouter();
 
     const baseImageUrl = 'http://localhost:3000/images'; // Base URL des images
@@ -97,13 +110,30 @@ export default defineComponent({
       }
     };
 
+    // Fonction de recherche de personnages
+    const searchCharacters = async () => {
+      try {
+        const response = await axios.get('http://localhost:3000/api/characters/search', {
+          params: {
+            name: searchQuery.value,
+            anime: selectedAnime.value || undefined,
+          }
+        });
+        characters.value = response.data;
+      } catch (error) {
+        console.error('Error searching characters:', error);
+      }
+    };
+
     const getCharacterImage = (character: string) => {
-      if (!selectedAnime.value) return '';
-      return `../images/${selectedAnime.value}/${character}.png`;
+      if (!selectedAnime.value && !character) return '../../images/default-placeholder.png';
+      if (!selectedAnime.value) return `../../images/${character}.png`;
+      return `../../images/${selectedAnime.value}/${character}.png`;
     };
 
     const goToCharacterDetail = (character: string) => {
-      router.push({ name: 'CharacterDetail', params: { anime: selectedAnime.value, character } });
+      const animeParam = selectedAnime.value || 'all-animes';
+      router.push({ name: 'CharacterDetail', params: { anime: animeParam, character } });
     };
 
     // Watch sur selectedAnime pour déclencher l'appel à fetchCharacters lorsqu'il change
@@ -126,6 +156,8 @@ export default defineComponent({
       selectedAnime,
       characters,
       fetchCharacters,
+      searchCharacters,
+      searchQuery,
       getCharacterImage,
       goToCharacterDetail
     };
@@ -134,7 +166,6 @@ export default defineComponent({
 </script>
 
 <style scoped>
-
 .hover-card {
   cursor: pointer;
   transition: transform 0.2s ease;
@@ -142,5 +173,4 @@ export default defineComponent({
 .hover-card:hover {
   transform: scale(1.05);
 }
-
 </style>

@@ -120,12 +120,11 @@ export default defineComponent({
             validData
         );
 
-        const previousCharacterName = characterName.value; // Conserve l'ancien nom
+        const previousCharacterName = characterName.value;
         characterName.value = validData.character_name; // Met à jour le nom localement
         characterData.value = { ...validData }; // Met à jour les données locales
         editMode.value = false;
 
-        // Redirige si le nom du personnage a changé
         if (previousCharacterName !== characterName.value) {
           router.push({
             name: 'CharacterDetail',
@@ -146,7 +145,7 @@ export default defineComponent({
     };
 
     const getCharacterImage = () => {
-      return `../../images/${animeName.value}/${characterName.value}.png`;
+      return `../../images/${animeName.value || 'all-animes'}/${characterName.value}.png`;
     };
 
     const genderText = computed(() => {
