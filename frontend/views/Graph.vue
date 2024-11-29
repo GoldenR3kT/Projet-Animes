@@ -136,7 +136,7 @@ export default defineComponent({
           labels: mbtiResponse.map((item: any) => item.mbti),
           datasets: [
             {
-              label: 'Pourcentage par MBTI',
+              label: 'Nombre par MBTI',
               data: mbtiResponse.map((item: any) => item.count),
               backgroundColor: 'rgba(75,192,192,0.2)',
               borderColor: 'rgba(75,192,192,1)',
@@ -150,7 +150,7 @@ export default defineComponent({
           labels: enneagramResponse.map((item: any) => item.enneagram),
           datasets: [
             {
-              label: 'Pourcentage par Ennéagramme',
+              label: 'Nombre par Ennéagramme',
               data: enneagramResponse.map((item: any) => item.count),
               backgroundColor: 'rgba(153,102,255,0.2)',
               borderColor: 'rgba(153,102,255,1)',
