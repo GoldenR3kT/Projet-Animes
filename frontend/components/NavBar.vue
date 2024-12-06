@@ -3,6 +3,8 @@
     <!-- Bouton Accueil tout à gauche -->
     <v-btn text @click="goToHome">Accueil</v-btn>
 
+    <v-btn text @click="goToAnimeList">Animes</v-btn>
+
     <!-- Titre centré -->
     <v-spacer></v-spacer>
     <h1 class="text-center">Animes Characters Visualsation</h1>
@@ -28,6 +30,10 @@ export default defineComponent({
       router.push('/');
     };
 
+    const goToAnimeList = () => {
+      router.push('/animeList');
+    };
+
     const goToGraphs = () => {
       router.push('/graph');
     };
@@ -38,6 +44,7 @@ export default defineComponent({
 
     return {
       goToHome,
+      goToAnimeList,
       goToGraphs,
       goToAddCharacter,
     };

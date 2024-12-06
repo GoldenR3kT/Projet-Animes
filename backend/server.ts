@@ -31,17 +31,26 @@ client.connect()
         console.error("Error connecting to MongoDB", error);
     });
 
-// Route pour récupérer les 20 premiers documents
+// Route pour récupérer les animes filtrés par genre
 app.get('/api/animes', async (req, res) => {
+    const { genre } = req.query;
+
     try {
-        // Utilisation de la méthode distinct() pour récupérer les noms d'animes uniques
-        const animes = await collection.distinct('anime_name');
+        let animes;
+        if (genre) {
+            // Si un genre est spécifié, filtrer les animes par genre
+            animes = await collection.distinct('anime_name', { anime_genre: genre });
+        } else {
+            // Sinon, récupérer tous les animes sans filtre
+            animes = await collection.distinct('anime_name');
+        }
         res.json(animes);
     } catch (err) {
         console.error("Error fetching data:", err);
         res.status(500).json({ error: "Internal Server Error" });
     }
 });
+
 
 // Route pour récupérer les personnages d'un anime donné
 app.get('/api/animes/:animeName/characters', async (req, res) => {
