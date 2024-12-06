@@ -11,6 +11,7 @@ import Graph from "./views/Graph.vue";
 import CharacterDetail from './views/CharacterDetail.vue';
 import {createRouter, createWebHistory} from "vue-router";
 import AddCharacter from "./views/AddCharacter.vue";
+import AnimeList from "./views/AnimeList.vue";
 
 const vuetify = createVuetify({
     components,
@@ -21,6 +22,7 @@ const routes = [
     { path: '/', component: CharacterList },
     { path: '/graph', component: Graph },
     { path: '/addCharacter', component: AddCharacter },
+    { path: '/animeList', component: AnimeList },
     {
         path: '/details/:anime/:character',
         name: 'CharacterDetail',
