@@ -11,6 +11,7 @@ import Graph from "./views/Graph.vue";
 import CharacterDetail from './views/CharacterDetail.vue';
 import {createRouter, createWebHistory} from "vue-router";
 import AddCharacter from "./views/AddCharacter.vue";
+import RandomCharacter from "./views/RandomCharacter.vue";
 
 const vuetify = createVuetify({
     components,
@@ -27,6 +28,7 @@ const routes = [
         component: CharacterDetail,
         props: true,
     },
+    {path: '/randomCharacter', component: RandomCharacter},
 ];
 
 const router = createRouter({

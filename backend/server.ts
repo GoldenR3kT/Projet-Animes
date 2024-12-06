@@ -310,6 +310,47 @@ app.put('/api/animes/:animeName/characters/:characterName', async (req, res) => 
     }
 });
 
+app.get('/api/characters/random', async (req, res) => {
+    try {
+        // Utilisation de $sample pour récupérer un document aléatoire
+        const randomCharacter = await collection.aggregate([{ $sample: { size: 1 } }]).toArray();
+
+        if (randomCharacter.length > 0) {
+            res.json(randomCharacter[0]);
+        } else {
+            res.status(404).json({ error: "No characters found in the database." });
+        }
+    } catch (err) {
+        console.error("Error fetching random character:", err);
+        res.status(500).json({ error: "Internal Server Error" });
+    }
+});
+
+app.get('/api/characters/:characterName/image', async (req, res) => {
+    const characterName = req.params.characterName;
+
+    try {
+        // Rechercher le personnage par son nom
+        const character = await collection.findOne({ character_name: characterName });
+
+        if (character) {
+            const rootDir = path.resolve(__dirname, '..');
+            const imagePath = path.join(rootDir, 'images', character.anime_name, `${characterName}.jpg`);
+
+            // Vérifier si l'image existe
+            if (fs.existsSync(imagePath)) {
+                res.sendFile(imagePath); // Envoyer l'image brute
+            } else {
+                res.status(404).json({ error: "Image not found" });
+            }
+        } else {
+            res.status(404).json({ error: "Character not found" });
+        }
+    } catch (err) {
+        console.error("Error fetching image:", err);
+        res.status(500).json({ error: "Internal Server Error" });
+    }
+});
 
 // Lancer le serveur sur le port 3000
 const PORT = 3000;
