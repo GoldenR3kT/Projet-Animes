@@ -22,7 +22,7 @@ const routes = [
     { path: '/graph', component: Graph },
     { path: '/addCharacter', component: AddCharacter },
     {
-        path: '/details/:anime/:character',
+        path: '/details/:anime?/:character',
         name: 'CharacterDetail',
         component: CharacterDetail,
         props: true,

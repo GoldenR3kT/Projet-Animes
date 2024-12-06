@@ -146,7 +146,7 @@ export default defineComponent({
     };
 
     const getCharacterImage = () => {
-      return `../../images/${animeName.value || 'all-animes'}/${characterName.value}.png`;
+      return `../../images/${animeName.value}/${characterName.value}.png`;
     };
 
     const genderText = computed(() => {

@@ -268,6 +268,7 @@ app.delete('/api/animes/:animeName/characters/:characterName', async (req, res) 
     }
 });
 
+//update personnage
 app.put('/api/animes/:animeName/characters/:characterName', async (req, res) => {
     const animeName = req.params.animeName;
     const characterName = req.params.characterName;

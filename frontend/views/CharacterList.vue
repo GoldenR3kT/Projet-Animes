@@ -23,7 +23,7 @@
             @input="searchCharacters"
             clearable
             outlined
-        ></v-text-field>
+            :disabled="!selectedAnime"/>
       </v-col>
     </v-row>
 
@@ -73,15 +73,13 @@ import NavBar from "../components/NavBar.vue";
 
 export default defineComponent({
   name: 'CharacterList',
-  components: {NavBar},
+  components: { NavBar },
   setup() {
-    const animes = ref<string[]>([]); // Liste des anime
+    const animes = ref<string[]>([]); // Liste des animes
     const selectedAnime = ref<string>(''); // Anime sélectionné
     const characters = ref<string[]>([]);
     const searchQuery = ref<string>(''); // Texte de recherche
     const router = useRouter();
-
-    const baseImageUrl = 'http://localhost:3000/images'; // Base URL des images
 
     // Fonction pour récupérer la liste des animes depuis le backend
     const fetchAnimes = async () => {
@@ -132,7 +130,7 @@ export default defineComponent({
     };
 
     const goToCharacterDetail = (character: string) => {
-      const animeParam = selectedAnime.value || 'all-animes';
+      const animeParam = selectedAnime.value;
       router.push({ name: 'CharacterDetail', params: { anime: animeParam, character } });
     };
 
