@@ -46,10 +46,28 @@ app.get('/api/animes', async (req, res) => {
 // Route pour récupérer les personnages d'un anime donné
 app.get('/api/animes/:animeName/characters', async (req, res) => {
     const animeName = req.params.animeName;
+    const { gender, mbti, enneagram, isMainCharacter } = req.query;
+
+    const filter: any = { anime_name: animeName };
+
+    if (gender) {
+        filter.character_gender = gender;
+    }
+
+    if (mbti) {
+        filter.character_mbti_type = mbti;
+    }
+
+    if (enneagram) {
+        filter.character_enneagram_type = enneagram;
+    }
+
+    if (isMainCharacter) {
+        filter.is_main_character = isMainCharacter === 'true';
+    }
+
     try {
-        // Recherche des personnages associés à cet anime
-        const characters = await collection.find({ anime_name: animeName }).toArray();
-        // Extraction uniquement des noms de personnages
+        const characters = await collection.find(filter).toArray();
         const characterNames = characters.map((character: any) => character.character_name);
         res.json(characterNames);
     } catch (err) {
@@ -57,6 +75,7 @@ app.get('/api/animes/:animeName/characters', async (req, res) => {
         res.status(500).json({ error: "Internal Server Error" });
     }
 });
+
 
 app.get('/api/graph/mbti', async (req, res) => {
     try {

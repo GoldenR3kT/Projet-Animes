@@ -27,6 +27,58 @@
       </v-col>
     </v-row>
 
+    <!-- Section des filtres -->
+    <v-row>
+      <v-col cols="12">
+        <v-divider></v-divider>
+        <v-subheader class="mt-4">Filtres</v-subheader>
+      </v-col>
+
+      <v-col cols="12" sm="3">
+        <v-select
+            :items="['m', 'f']"
+            label="Filtrer par sexe"
+            v-model="selectedGender"
+            @change="fetchCharacters"
+            clearable
+            outlined
+        ></v-select>
+      </v-col>
+
+      <v-col cols="12" sm="3">
+        <v-select
+            :items="['ENFJ', 'ENFP', 'ENTJ', 'ENTP', 'ESFJ', 'ESFP', 'ESTJ', 'ESTP', 'INFJ', 'INFP', 'INTJ', 'INTP', 'ISFJ', 'ISFP', 'ISTJ', 'ISTP', 'XXXX']"
+            label="Filtrer par MBTI"
+            v-model="selectedMbti"
+            @change="fetchCharacters"
+            clearable
+            outlined
+        ></v-select>
+      </v-col>
+
+      <v-col cols="12" sm="3">
+        <v-select
+            :items="['1w2', '1w9', '2w1', '2w3', '3w2', '3w4', '4w3', '4w5', '5w4', '5w6', '6w5', '6w7', '7w6', '7w8', '8w7', '8w9', '9w1', '9w8', 'XwX']"
+            label="Filtrer par Ennéagramme"
+            v-model="selectedEnneagram"
+            @change="fetchCharacters"
+            clearable
+            outlined
+        ></v-select>
+      </v-col>
+
+      <v-col cols="12" sm="3">
+        <v-select
+            :items="['true', 'false']"
+            label="Filtrer par personnage principal"
+            v-model="selectedMainCharacter"
+            @change="fetchCharacters"
+            clearable
+            outlined
+        ></v-select>
+      </v-col>
+    </v-row>
+
     <!-- Liste des personnages -->
     <v-row v-if="characters.length > 0">
       <v-col
@@ -65,6 +117,7 @@
   </v-container>
 </template>
 
+
 <script lang="ts">
 import { defineComponent, ref, onMounted, watch } from 'vue';
 import axios from 'axios';
@@ -75,10 +128,14 @@ export default defineComponent({
   name: 'CharacterList',
   components: { NavBar },
   setup() {
-    const animes = ref<string[]>([]); // Liste des animes
-    const selectedAnime = ref<string>(''); // Anime sélectionné
+    const animes = ref<string[]>([]);
+    const selectedAnime = ref<string>('');
+    const selectedGender = ref<string>('');
+    const selectedMbti = ref<string>('');
+    const selectedEnneagram = ref<string>('');
+    const selectedMainCharacter = ref<string>('');
     const characters = ref<string[]>([]);
-    const searchQuery = ref<string>(''); // Texte de recherche
+    const searchQuery = ref<string>('');
     const router = useRouter();
 
     // Fonction pour récupérer la liste des animes depuis le backend
@@ -91,7 +148,7 @@ export default defineComponent({
       }
     };
 
-    // Fonction pour récupérer les personnages d'un anime
+    // Fonction pour récupérer les personnages d'un anime avec filtres
     const fetchCharacters = async () => {
       if (!selectedAnime.value) {
         characters.value = [];
@@ -100,8 +157,15 @@ export default defineComponent({
 
       try {
         const encodedAnimeName = encodeURIComponent(selectedAnime.value); // Encoder le nom de l'anime
-        const response = await axios.get(`http://localhost:3000/api/animes/${encodedAnimeName}/characters`);
-        characters.value = response.data; // Liste des personnages
+        const response = await axios.get(`http://localhost:3000/api/animes/${encodedAnimeName}/characters`, {
+          params: {
+            gender: selectedGender.value,
+            mbti: selectedMbti.value,
+            enneagram: selectedEnneagram.value,
+            isMainCharacter: selectedMainCharacter.value,
+          }
+        });
+        characters.value = response.data; // Liste des personnages filtrés
         console.log('Characters fetched:', characters.value); // Vérification de la réponse
       } catch (error) {
         console.error('Error fetching characters:', error);
@@ -134,34 +198,31 @@ export default defineComponent({
       router.push({ name: 'CharacterDetail', params: { anime: animeParam, character } });
     };
 
-    // Watch sur selectedAnime pour déclencher l'appel à fetchCharacters lorsqu'il change
-    watch(selectedAnime, () => {
-      fetchCharacters();
-    });
+    // Fonction watch pour chaque filtre, pour rafraîchir la liste des personnages
+    watch([selectedAnime, selectedGender, selectedMbti, selectedEnneagram, selectedMainCharacter], fetchCharacters, { immediate: true });
 
-    // Récupérer les animes au chargement du composant
-    onMounted(() => {
-      fetchAnimes();
-    });
-
-    const goToGraphPage = () => {
-      router.push('/graph');
-    };
+    // Charger la liste des animes au montage
+    onMounted(fetchAnimes);
 
     return {
-      goToGraphPage,
       animes,
       selectedAnime,
+      selectedGender,
+      selectedMbti,
+      selectedEnneagram,
+      selectedMainCharacter,
       characters,
-      fetchCharacters,
-      searchCharacters,
       searchQuery,
+      fetchCharacters,
       getCharacterImage,
-      goToCharacterDetail
+      goToCharacterDetail,
+      searchCharacters
     };
-  },
+  }
 });
 </script>
+
+
 
 <style scoped>
 .hover-card {
