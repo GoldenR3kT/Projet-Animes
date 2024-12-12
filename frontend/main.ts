@@ -12,7 +12,7 @@ import CharacterDetail from './views/CharacterDetail.vue';
 import {createRouter, createWebHistory} from "vue-router";
 import AddCharacter from "./views/AddCharacter.vue";
 import AnimeList from "./views/AnimeList.vue";
-
+import RandomCharacter from "./views/RandomCharacter.vue";
 const vuetify = createVuetify({
     components,
     directives,
@@ -29,6 +29,7 @@ const routes = [
         component: CharacterDetail,
         props: true,
     },
+    { path: '/randomCharacter', component: RandomCharacter },
 ];
 
 const router = createRouter({
