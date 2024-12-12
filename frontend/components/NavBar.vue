@@ -1,19 +1,22 @@
 <template>
   <v-app-bar app color="primary" dark>
     <!-- Bouton Accueil tout à gauche -->
-    <v-btn text @click="goToHome">Accueil</v-btn>
+    <v-btn @click="goToHome">Accueil</v-btn>
 
-    <v-btn text @click="goToAnimeList">Animes</v-btn>
+    <v-btn @click="goToAnimeList">Animes</v-btn>
 
+    <v-btn @click="goToRandomCharacter">Personnage aléatoire</v-btn>
     <!-- Titre centré -->
     <v-spacer></v-spacer>
     <h1 class="text-center">Animes Characters Visualsation</h1>
     <v-spacer></v-spacer>
 
-    <v-btn text @click="goToAddCharacter">Ajouter un personnage</v-btn>
+    <v-btn @click="goToAddCharacter">Ajouter un personnage</v-btn>
 
     <!-- Bouton Graphiques tout à droite -->
-    <v-btn text @click="goToGraphs">Graphiques</v-btn>
+    <v-btn @click="goToGraphs">Graphiques</v-btn>
+
+
   </v-app-bar>
 </template>
 
@@ -42,11 +45,16 @@ export default defineComponent({
       router.push('/addCharacter')
     }
 
+    const goToRandomCharacter = () => {
+      router.push('/randomCharacter')
+    }
+
     return {
       goToHome,
       goToAnimeList,
       goToGraphs,
       goToAddCharacter,
+      goToRandomCharacter
     };
   },
 });
