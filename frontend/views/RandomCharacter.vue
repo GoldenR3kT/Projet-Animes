@@ -26,9 +26,12 @@
             label="Devinez le nom du personnage"
             outlined
             dense
+            :disabled="inputDisabled"
             @keyup.enter="checkGuess"
         />
-        <v-btn color="primary" @click="checkGuess">Essayer</v-btn>
+        <v-btn color="primary" @click="checkGuess" :disabled="inputDisabled">
+          Essayer
+        </v-btn>
 
         <!-- Message d'indication -->
         <v-alert v-if="feedbackMessage" :type="feedbackType" class="mt-2">{{ feedbackMessage }}</v-alert>
@@ -62,11 +65,13 @@ export default {
       try {
         const response = await axios.get("http://localhost:3000/api/characters/random");
         character.value = response.data;
-        animeName.value = character.value.anime_name; // Mise à jour du nom de l'anime
-        characterName.value = character.value.character_name; // Mise à jour du nom du personnage
-        userGuess.value = ''; // Réinitialiser la réponse de l'utilisateur
-        guessCount.value = 0; // Réinitialiser le compteur d'essais
-        feedbackMessage.value = ''; // Réinitialiser le message de feedback
+        animeName.value = character.value.anime_name;
+        characterName.value = character.value.character_name;
+        userGuess.value = '';
+        guessCount.value = 0;
+        feedbackMessage.value = '';
+        feedbackType.value = '';
+        inputDisabled.value = false; // Réactiver la saisie
       } catch (error) {
         console.error("Erreur lors de la récupération du personnage :", error);
       }
@@ -82,18 +87,28 @@ export default {
 
     // Propriété calculée pour le flou dynamique
     const blurAmount = computed(() => {
-      return guessCount.value >= 0 ? 20 - Math.min(guessCount.value, 20) : 20;
+      return Math.max(20 - guessCount.value, 0); // Assurez-vous que le flou ne devienne pas négatif
     });
+
+    const inputDisabled = ref(false);
 
     // Fonction pour vérifier la réponse de l'utilisateur
     const checkGuess = () => {
       if (userGuess.value.trim().toLowerCase() === characterName.value.toLowerCase()) {
         feedbackMessage.value = "Bravo, vous avez trouvé le personnage!";
         feedbackType.value = "success";
+        guessCount.value = 20; // Force le flou à disparaître
+        inputDisabled.value = true; // Désactiver la zone de saisie
       } else {
         guessCount.value += 1;
-        feedbackMessage.value = `Essai incorrect! Nombre d'essais : ${guessCount.value}`;
-        feedbackType.value = "error";
+        if (guessCount.value >= 20) {
+          feedbackMessage.value = "Perdu! Vous n'avez pas trouvé le personnage.";
+          feedbackType.value = "error";
+          inputDisabled.value = true; // Désactiver la zone de saisie
+        } else {
+          feedbackMessage.value = `Essai incorrect! Nombre d'essais : ${guessCount.value}`;
+          feedbackType.value = "error";
+        }
       }
     };
 
@@ -110,7 +125,8 @@ export default {
       checkGuess, // Fonction pour vérifier la réponse
       feedbackMessage, // Message de feedback
       feedbackType, // Type de message de feedback
-      blurAmount, // Valeur dynamique du flou
+      blurAmount,
+      inputDisabled// Valeur dynamique du flou
     };
   },
 };
