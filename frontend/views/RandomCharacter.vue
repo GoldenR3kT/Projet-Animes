@@ -7,13 +7,15 @@
       <v-card-subtitle class="text-center">{{ character.anime_name }}</v-card-subtitle>
 
       <v-card-text>
-        <!-- Image floutée -->
+        <!-- Image floutée avec v-bind:style -->
         <v-img
             v-if="imagePath"
             :src="imagePath"
-            class="blurred-image"
+            :style="{ filter: `blur(${blurAmount}px)` }"
+            class="fixed-image"
             aspect-ratio="100"
         ></v-img>
+
         <v-alert v-else type="info" text>
           Aucune image disponible.
         </v-alert>
@@ -78,29 +80,13 @@ export default {
       return ''; // Retourner une chaîne vide si les informations ne sont pas disponibles
     });
 
-    // Classe dynamique pour flouter l'image en fonction du nombre d'essais
-    const blurredImageClass = computed(() => {
-      console.log("Calcul de la classe de l'image floutée...");
-      const blurAmount = 20 - guessCount.value; // Réduire le flou à chaque essai
-      return {
-        'blurred-image': true,
-        'blurred-image-weak': blurAmount <= 0 ? 0 : blurAmount, // Contrôler l'intensité du flou
-      };
+    // Propriété calculée pour le flou dynamique
+    const blurAmount = computed(() => {
+      return guessCount.value >= 0 ? 20 - Math.min(guessCount.value, 20) : 20;
     });
-
-    const blurAmount = () => {
-      console.log("Calcul de l'intensité du flou...");
-      console.log("Nombre d'essais :", guessCount.value);
-      console.log("Intensité du flou :", 20 - guessCount.value);
-      return 20 - guessCount.value;
-    } // Réduire le flou à chaque essai
 
     // Fonction pour vérifier la réponse de l'utilisateur
     const checkGuess = () => {
-      console.log("Vérification de la réponse...");
-      console.log("Réponse de l'utilisateur :", userGuess.value);
-      console.log("Nom du personnage :", characterName.value);
-      console.log("Nombre d'essais :", guessCount.value);
       if (userGuess.value.trim().toLowerCase() === characterName.value.toLowerCase()) {
         feedbackMessage.value = "Bravo, vous avez trouvé le personnage!";
         feedbackType.value = "success";
@@ -120,24 +106,24 @@ export default {
       character,
       userGuess,
       fetchRandomCharacter,
-      imagePath, // Retours de l'URL de l'image à utiliser dans le template
+      imagePath, // URL de l'image
       checkGuess, // Fonction pour vérifier la réponse
       feedbackMessage, // Message de feedback
       feedbackType, // Type de message de feedback
-      blurredImageClass, // Classe dynamique pour flouter l'image
-      blurAmount,
+      blurAmount, // Valeur dynamique du flou
     };
   },
 };
 </script>
 
 <style scoped>
-.blurred-image {
-  filter: blur(v-bind(blurAmount)); /* Appliquer un flou à l'image par défaut */
-  border-radius: 8px; /* Ajoute des coins arrondis */
-  width: 300px; /* Largeur fixe */
-  height: 300px; /* Hauteur fixe */
-  object-fit: cover; /* Assure que l'image s'ajuste sans déformation */
+.fixed-image {
+  top: 0;
+  left: 0;
+  z-index: -1;
+  width: 300px;
+  height: 300px;
+  transition: filter 0.3s ease; /* Ajout d'une transition pour un effet plus fluide */
 }
 
 </style>
